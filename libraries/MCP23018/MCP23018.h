@@ -3,7 +3,7 @@
 /**
  * Driver for Microchip MCP23018 Port Extender
  *
- * See @link ww1.microchip.com/downloads/en/DeviceDoc/22103a.pdf Datasheet @endlink
+ * See <a href="http://ww1.microchip.com/downloads/en/DeviceDoc/22103a.pdf">Datasheet</a>
  *
  * Create one instance of this class for each chip in your circuit.
  *
@@ -18,12 +18,12 @@ protected:
 	 */
 	uint8_t i2c_address;
 
-	/**{*/
 	/**
-	 * Internals.
+	 * @name Internals.
 	 *
 	 * Protected methods that address the chip directly.
 	 */
+	/**@{*/
 
 	/**
 	 * Write an entire control register
@@ -33,6 +33,16 @@ protected:
 	 */
 	void writeToRegister(uint8_t address, uint8_t data);
 
+	/**
+	 * Write twice to a control register
+	 *
+	 * I think this is only useful for the GPIOA/B registers, which automatically
+	 * toggle between themselves after writing one.
+	 *
+	 * @param address The address of the particular register
+	 * @param first The first byte to write into the particular register
+	 * @param second The second byte to write into the particular register
+	 */
 	void writePairToRegister(uint8_t address, uint8_t first, uint8_t second);
 
 	/**
@@ -68,7 +78,7 @@ protected:
 	 * @param mask 1's for all bits that should be set.
 	 */
 	void setBitGroupInRegister(const uint8_t address, const uint8_t data, const uint8_t mask);
-	/**}*/
+	/**@}*/
 
 public:
 	/**
@@ -117,14 +127,65 @@ public:
 	 * @param _data Bits to set
 	 */	 
 	void SetPortB(uint8_t _data);
-	
+
+	/**
+	 * Set the outputs on both ports in a single call
+	 *
+	 * @param _a Bits to set on Port A
+	 * @param _b Bits to set on Port B
+	 */	 
 	void SetPorts(uint8_t _a, uint8_t _b);
 	
+	/**
+	 * Get the input values on Port A
+	 *
+	 * @return The bits set on Port A inputs 
+	 */	 
 	uint8_t GetPortA(void);
+	
+	/**
+	 * Get the input values on Port B
+	 *
+	 * @sa GetPortA
+	 * @return The bits set on Port B inputs 
+	 */	 
 	uint8_t GetPortB(void);
+	
+	/**
+	 * Get the output latches on Port A
+	 *
+	 * The latches are the values we previously set, rather than trying to read the
+	 * port itself.  If you want to read the previously-set values with an eye toward
+	 * updating only certain bits, use this method.
+	 * 
+	 * @return The bits set on Port A 
+	 */	 
 	uint8_t GetLatchPortA(void);
+	
+	/**
+	 * Get the output latches on Port B
+	 *
+	 * @sa GetLatchPortA 
+	 * @return The bits set on Port B 
+	 */
 	uint8_t GetLatchPortB(void);
+	
+	/**
+	 * Set only certain bits on Port B
+	 *
+	 * For example, to set the lowest 4 bits of this port to B1001, send
+	 * @a _data as B00001001 and @a _mask as B00001111.
+	 *
+	 * @param _data The data to set
+	 * @param _mask Which bits to set
+	 */
 	void SetPortB_bits(uint8_t _data, uint8_t _mask);
 };
 
-	
+/**
+ * @mainpage Driver library for MCP23018 I2C Port Expander
+ *
+ * "MCP23018 is a 16-bit I/O expander for high speed I2Câ„¢ Compatible interface."
+ *
+ * See the MCP23018 class for details on how to drive this chip
+ */	
