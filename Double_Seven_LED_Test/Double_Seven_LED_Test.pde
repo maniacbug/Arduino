@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <MCP23018.h>
 
-// Port extender
+// Port extender is on address 0
 MCP23018 pex(0);
 
 // Font
@@ -15,22 +15,21 @@ byte ledCharSet[] =
   	B01001110, B00111101, B01001111, B01000111	// CDEF
 };
 
+// Reverse the bits in a single byte
 uint8_t reverse(uint8_t _in)
 {
   uint8_t result = 0;
-  uint8_t result_cursor = 0x80;
-  uint8_t in_cursor = 0x1;
-  
-  int i = 8;
-  while (i--)
+  uint8_t bit = B10000000;
+
+  while (bit)
   {
-    if ( _in & in_cursor )
-      result |= result_cursor;
+    if ( _in & 1 )
+      result |= bit;
       
-    in_cursor <<= 1;
-    result_cursor >>= 1;
+    _in >>= 1;
+    bit >>= 1;
   }
-  
+
   return result;
 }
 
@@ -38,6 +37,8 @@ void setup(void)
 {
   Wire.begin();
   pex.begin();
+  
+  // Set all 1's, turns the display off by default
   pex.SetPorts(0xff,0xff);
 
   // This font requires some manhandling.
@@ -56,7 +57,7 @@ uint8_t value;
 void loop()
 {
   // Send the current value to the chip, low nibble to 'A', high nibble 'B'
-  pex.SetPorts(ledCharSet[value & 0xf],ledCharSet[value >> 4]);
+  pex.SetPorts(ledCharSet[value >> 4],ledCharSet[value & 0xf]);
   
   // Next value.  Note that this will wrap around from 0xff back to 0 with no additional
   // work needed because it is an 8-bit value.
