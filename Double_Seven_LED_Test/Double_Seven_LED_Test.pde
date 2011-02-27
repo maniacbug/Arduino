@@ -56,7 +56,7 @@ uint8_t value;
 
 void loop()
 {
-  // Send the current value to the chip, low nibble to 'A', high nibble 'B'
+  // Send the current value to the chip, high nibble to 'A', low nibble 'B'
   pex.SetPorts(ledCharSet[value >> 4],ledCharSet[value & 0xf]);
   
   // Next value.  Note that this will wrap around from 0xff back to 0 with no additional
